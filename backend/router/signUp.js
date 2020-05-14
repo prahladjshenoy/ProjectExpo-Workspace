@@ -54,47 +54,61 @@ router.route('/signIn').post((req,res)=>{
   
   email=email.toLowerCase() ;
 
-  //verify mail
-  User.find({
+  
+// verify E-mail was SignedUp
+   User.find({ 
 
-    email:email,
-    password:password
-
-    },(err,users)=>{
-
+    email:email
+    
+   },(err,user)=>{
     if(err){
       res.json({"Error":"Server Error" ,"message":err.message})
-    } else if(users.length !=1 ){
-       res.json({"message":'Error :Invalid'})
-    }
-
-     //in validPassword
-    const user=users[0];
-
-    //For bcrypt hasing 
-    // if(!user.validPsassword(password)){
-    //     res.json('Error :Invalid Password')
-    // }
-
-    //Correct user
-    try{
+    }else if(!user.length ){
+      res.json({"message":'Invalid Email or User not SignUp'})
+    }else{
       
-    const userSession =new UserSession();
-      userSession.userId = user._id;
-      userSession.save((err,doc)=>{
+      //verify E-mail and  Password matches
+      User.find({
+
+        email:email,
+        password:password
+
+        },(err,users)=>{
+
         if(err){
           res.json({"Error":"Server Error" ,"message":err.message})
-          }
+        }else if(users.length !=1 ){
+          res.json({"Error" : "Invalid","message":' Password is Invalid'}) // res.json({"Error" : "Invalid","message":'E-mail or Password is Invalid'})
+        } else{
+          //in validPassword
+          const user=users[0];
 
-        res.json({'success':'true',"message":"Signed In ", token:doc._id});
-      
-        });
-     
-    }catch(err){
-      console.log( "MyError"+err);
-    }
-  
-  });
+          //For bcrypt hasing 
+          // if(!user.validPsassword(password)){
+          //     res.json('Error :Invalid Password')
+          // }
+
+          //Correct user
+          try{
+            
+          const userSession =new UserSession();
+            userSession.userId = user._id;
+            userSession.save((err,doc)=>{
+              if(err){
+                res.json({"Error":"Server Error" ,"message":err.message})
+                }
+
+              res.json({'success':'true',"message":"Signed In ", token:doc._id});
+            
+              });
+          
+          }catch(err){
+            console.log( "MyError"+err);
+          }
+        }
+      });
+    
+  }});
 
 });
 
@@ -120,7 +134,7 @@ router.route('/logout').get((req,res)=>{
 
   const token =req.query.token;
 
-  UserSession.findOneAndUpdate({
+  UserSession.updateOne({
     _id :token,
     isDeleted:false
     },{

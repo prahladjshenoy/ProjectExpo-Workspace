@@ -50,22 +50,50 @@ class signUp extends Component {
   }
 
   onChangeSignInEmail(event){
+
+    // this.setState( this.state.signInEmail.length <= 2  ? {signInError:"Name should not lesser than 3"}   :  null );
+    // this.setState( this.state.signInEmail.length >= 14 ? {signInError:"Name should not greater than 15"} :  null  );
+    // this.setState( this.state.signInEmail.length <= 14 && this.state.signInEmail.length >= 2  ? {signInError:""} :  null  );
+
     this.setState({signInEmail : event.target.value})
   };
 
   onChangeSignInPassword(event){
+
+    // this.setState( this.state.signInPassword.length <= 2  ? {signInError:"Name should not lesser than 3"}   :  null );
+    // this.setState( this.state.signInPassword.length >= 14 ? {signInError:"Name should not greater than 15"} :  null  );
+    // this.setState( this.state.signInPassword.length <= 14 && this.state.signUpName.length >= 2  ? {signInError:""} :  null  );
+    
+
     this.setState({signInPassword : event.target.value})
   };
 
   onChangeSignUpName(event){
+
+    // this.state.signUpName.length <= 2   ? this.setState( {signUpError:"Name should not lesser than 3"})   : this.setState( {signUpError:""}  );
+    // this.state.signUpName.length >= 14  ? this.setState( {signUpError:"Name should not greater than 15"}) : this.setState( {signUpError:""}  );
+
+    // this.setState( this.state.signUpName.length <= 2  ? {signUpError:"Name should not lesser than 3"}   :  null );
+    // this.setState( this.state.signUpName.length >= 14 ? {signUpError:"Name should not greater than 15"} :  null  );
+    // this.setState( this.state.signUpName.length <= 14 && this.state.signUpName.length >= 2  ? {signUpError:""} :  null  );
+    
     this.setState({signUpName : event.target.value})
   };
 
   onChangeSignUpEmail(event){
+    // const regExp=/^[a-zA-Z0-9]+@[a-zA-Z0-9]+\.[A-Za-z]+$/
+    // this.state.signUpEmail.length <= 2   ? this.setState({signUpError:"Email should not lesser than 3"})   : this.setState( {signUpError:""}  );
+    // regExp.test(this.state.signUpEmail) ?this.setState({signUpError:"Invalid formate of Email "})   : this.setState( {signUpError:""}  );
+    // this.state.signUpEmail.length >= 14  ? this.setState({signUpError:"Email should not greater than 15"})   : this.setState( {signUpError:""}  );
+   
     this.setState({signUpEmail : event.target.value})
   };
 
   onChangeSignUpPassword(event){
+
+    // this.state.signUpPassword.length <= 2   ? this.setState( {signUpError:"Password should not lesser than 3"})   : this.setState( {signUpError:""}  );
+    // this.state.signUpPassword.length >= 14  ? this.setState( {signUpError:"Password should not greater than 15"}) : this.setState( {signUpError:""}  );
+   
     this.setState({signUpPassword : event.target.value})
   };
   
@@ -76,40 +104,48 @@ class signUp extends Component {
       signInPassword
     }= this.state;
     
-    
-    this.setState({isLoading:true});
-    // post request to backend 
-    fetch('http://localhost:619/user/signIn',{
-          method:'POST',
-          headers:{
-            'Content-Type' : 'application/json'
-          },
-          body: JSON.stringify({
-            email:signInEmail,
-            password : signInPassword
-          }),
-        })
-          .then(res => res.json())
-          .then( json =>{
-            if(json.success){
-              setInStorage('Log', { token: json.token })
-              this.setState({
-                signInError:json.message,
-                isLoading:false ,
-                signInEmail:'',
-                signInPassword:'',
-                token:json.token,
-              });
-              
-            } else {
-            
+    //Checking weather email,password are not empty
+    if(signInEmail === '' || signInEmail === undefined ){
+        this.setState({signInError : "Please Enter the your E-mail."}) ;
+      }else if(signInPassword === '' || signInPassword === undefined ){
+        this.setState({signInError : "Please Enter the your password."}) ;
+      }else{
+
+      this.setState({isLoading:true});
+      // post request to backend 
+      fetch('http://localhost:619/user/signIn',{
+            method:'POST',
+            headers:{
+              'Content-Type' : 'application/json'
+            },
+            body: JSON.stringify({
+              email:signInEmail,
+              password : signInPassword
+            }),
+          })
+            .then(res => res.json())
+            .then( json =>{
+              if(json.success){
+                setInStorage('Log', { token: json.token })
                 this.setState({
                   signInError:json.message,
                   isLoading:false ,
+                  signInEmail:'',
+                  signInPassword:'',
+                  token:json.token,
                 });
-            }
+                
+              } else {
+              
+                  this.setState({
+                    signInError:json.message,
+                    isLoading:false ,
+                    
+                  });
+              }
 
-          } )
+            } )
+    }
 
   };
 
@@ -120,40 +156,51 @@ class signUp extends Component {
       signUpEmail,
       signUpPassword
     }= this.state;
-    
-    this.setState({isLoading:true});
-    // post request to backend 
-    fetch('http://localhost:619/user/signUp',{
-          method:'POST',
-          headers:{
-            'Content-Type' : 'application/json'
-          },
-          body: JSON.stringify({
-            name:signUpName,
-            email:signUpEmail,
-            password : signUpPassword
-          }),
-        })
-          .then(res => res.json())
-          .then( json =>{
-            if(json.success){
-              setInStorage('Log', { token: json.token })
-              this.setState({
-                signUpError:json.message,
-                isLoading:false ,
-                signUpName:'',
-                signUpEmail:'',
-                signUpPassword:'',
-                token:json.token,
-              });
-              
-            } else {
+
+    //Checking weather name ,email,password are not empty
+    if (signUpName === '' ||signUpName === undefined ){
+     this.setState({signUpError : "Please Enter the your good name."}) ;
+     }else if(signUpEmail === '' ||signUpEmail === undefined ){
+      this.setState({signUpError : "Please Enter the your E-mail."}) ;
+     }else if(signUpPassword === '' ||signUpPassword === undefined ){
+      this.setState({signUpError : "Please Enter the your password."}) ;
+     }else{
+
+      this.setState({isLoading:true});
+      // post request to backend 
+      fetch('http://localhost:619/user/signUp',{
+            method:'POST',
+            headers:{
+              'Content-Type' : 'application/json'
+            },
+            body: JSON.stringify({
+              name:signUpName,
+              email:signUpEmail,
+              password : signUpPassword
+            }),
+          })
+            .then(res => res.json())
+            .then( json =>{
+              if(json.success){
+                setInStorage('Log', { token: json.token })
                 this.setState({
                   signUpError:json.message,
                   isLoading:false ,
+                  signUpName:'',
+                  signUpEmail:'',
+                  signUpPassword:'',
+                  token:json.token,
                 });
-            }
-          } )
+                
+              } else {
+                  this.setState({
+                    signUpError:json.message,
+                    isLoading:false ,
+                  });
+              }
+            } )
+
+    }
   };
 
   onLogOut(){
@@ -165,6 +212,7 @@ class signUp extends Component {
             .then(json =>{
               if(json.success){
                 localStorage.removeItem("Log");
+                this.setState({token:''});
               }
             })       
       }
@@ -194,15 +242,15 @@ class signUp extends Component {
         <>
           {signInError}
           <h1>SignIn<br/></h1>
-            <input value = { signInEmail } onChange={ this.onChangeSignInEmail  }  type='email' placeholder='Email'/><br/>
-            <input value = { signInPassword }  onChange={ this.onChangeSignInPassword} type='password' placeholder ='Password'/><br/><br/>
+            <input value = { signInEmail } onChange={ this.onChangeSignInEmail  }  type='email' placeholder='Email' required/><br/>
+            <input value = { signInPassword }  onChange={ this.onChangeSignInPassword} type='password' placeholder ='Password' required/><br/><br/>
             <button onClick = { this.onSignIn} >Sing In</button><br/>
           
           {signUpError} 
           <h1><br/>SignUp</h1>
-            <input value = { signUpName }  onChange={ this.onChangeSignUpName } type ='text' placeholder='User Name'/><br/>
-            <input value = { signUpEmail}  onChange={ this.onChangeSignUpEmail } type='email' placeholder='Email'/><br/>
-            <input value = { signUpPassword}  onChange={ this.onChangeSignUpPassword } type='password' placeholder ='Password'/><br/><br/>
+            <input value = { signUpName }  onChange={ this.onChangeSignUpName } type ='text' placeholder='User Name' required/><br/>
+            <input value = { signUpEmail}  onChange={ this.onChangeSignUpEmail } type='email' placeholder='Email' required/><br/>
+            <input value = { signUpPassword}  onChange={ this.onChangeSignUpPassword } type='password' placeholder ='Password' required/><br/><br/>
             <button onClick = { this.onSignUp}>Sing Up</button><br/>
         </>
         )
@@ -211,7 +259,7 @@ class signUp extends Component {
     return (
       <>
         <h1>Account</h1>
-        <button onClick={this.onLogOut }>log out</button>
+        <button onClick={this.onLogOut }> Logout </button>
       </>
     );
   }

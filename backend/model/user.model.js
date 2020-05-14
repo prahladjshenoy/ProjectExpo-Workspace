@@ -9,8 +9,8 @@ const UserSchema= new mongoose.Schema({
   name:{
     type:String,
     required:true,
-    minlength:3,
-    maxlength:15,
+    // minlength:3,
+    // maxlength:15,
 
   },
   email:{
@@ -21,8 +21,8 @@ const UserSchema= new mongoose.Schema({
   password:{
     type:String,
     required:true,
-    minlength:3,
-    maxlength:15,
+    // minlength:3,
+    // maxlength:15,
 
   },
   },{
